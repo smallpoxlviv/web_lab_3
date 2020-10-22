@@ -1,0 +1,55 @@
+.right__block{
+	width: 75%;
+    padding:0 15px 5px 4%;
+}
+.dwelling__list{
+    display: flex;
+    flex-wrap: wrap;
+}
+.dwelling__item{
+	border: 2px solid #A9A9A9;
+	border-radius: 5px;
+	margin: 0 5px 30px 30px;
+	padding: 3px;
+}
+
+.item__img__wrap{
+	width: 250px;
+  	height: 150px;
+  	overflow: hidden;
+}
+.gwelling__img{
+	max-width: 250px;
+}
+.dwelling__item__title{
+	margin: 3px 0 0 0;
+	text-align: center;
+	color:#37447E;
+	font-size: 16px;
+}
+.dwelling__item__paragraph{
+	font-size: 14px;
+	padding: 0 0 0 10px;
+}
+
+.control__buttons{
+	padding: 5px 0 0 0;
+	display: flex;
+	justify-content: space-around;
+}
+.item__btn{
+	width:74px;
+    height:26px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 2px;
+    border: none;
+
+    background: #FFD166;
+    color: #111B47;
+}
+.delete__btn{
+	background: #111B47;
+    color: #FFFFFF;
+}
