@@ -4,9 +4,14 @@
 	justify-content: center;
 	min-width: 250px;
 	max-width: 33vw;
-	padding-top: 70px;
+	padding: 70px 0;
 	margin: 0 auto;
 	color:#37447E;
+
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
 }
 
 .add__title{
@@ -36,7 +41,7 @@
 	margin: 0 auto 0 30px;
 }
 
-.submit__btn{
+.submit__add__dwelling__btn{
     height:32px;
     font-size: 14px;
     font-weight: 500;

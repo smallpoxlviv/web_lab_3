@@ -5,99 +5,38 @@ const dwellingList = document.getElementById('dwelling__list');
 const inputDwelling = document.getElementById('header__input');
 const clearButton = document.getElementById('clear__btn');
 
-let dwellings = [
-    {
-        id: 1,
-        imageSrc: "images/dwelling/a.jpg",
-        title: "shwadchack",
-        areaInSquareMeters: 150,
-        priceInUSD: 20000,
-        location: "Manhattan",
-        floors: 3,
-        swimmingPool: true
-    },
-    {
-        id: 2,
-        imageSrc: "images/dwelling/a.jpg",
-        title: "kakak",
-        areaInSquareMeters: 150,
-        priceInUSD: 205400,
-        location: "Manhattan",
-        floors: 1,
-        swimmingPool: true
-    },
-    {
-        id: 3,
-        imageSrc: "images/dwelling/a.jpg",
-        title: "vytr",
-        areaInSquareMeters: 150,
-        priceInUSD: 2000026,
-        location: "Manhattan",
-        floors: 3,
-        swimmingPool: true
-    },
-    {
-        id: 4,
-        imageSrc: "images/dwelling/a.jpg",
-        title: "morty",
-        areaInSquareMeters: 150,
-        priceInUSD: 100600,
-        location: "Manhattan",
-        floors: 3,
-        swimmingPool: true
-    },
-    {
-        id: 5,
-        imageSrc: "images/dwelling/a.jpg",
-        title: "dubnevich",
-        areaInSquareMeters: 150,
-        priceInUSD: 680000,
-        location: "Manhattan",
-        floors: 3,
-        swimmingPool: false
-    }  
-]
+
+let dwellings = [];
+
+dwellingsString = dwellingsString.replaceAll('&quot;', '"');
+if (dwellingsString != '') {
+    dwellings = JSON.parse(dwellingsString);
+}
 
 let shownDwellings = dwellings;
 
 function getDwellingItem (imageSrc, title, areaInSquareMeters, priceInUSD, location, floors, swimmingPool) {
-	if (swimmingPool){
-        return `
-        <li class="dwelling__item">
-            <div class="item__img__wrap">
-                <img src="${imageSrc}" alt="dwelling image" class="gwelling__img">
-            </div>
-            <h3 class="dwelling__item__title">${title}</h3>
-            <p class="dwelling__item__paragraph">Area: ${areaInSquareMeters} m^2</p>
-            <p class="dwelling__item__paragraph">Price: ${priceInUSD} USD</p>
-            <p class="dwelling__item__paragraph">Location: ${location}</p>
-            <p class="dwelling__item__paragraph">Has ${floors} floors</p>
-            <p class="dwelling__item__paragraph">Has swimming pool</p>
-            <div class= "control__buttons">
-                <button class="item__btn edit__btn" id="edit__btn">Edit</button>
-                <button class="item__btn delete__btn" id="delete__btn">Delete</button>
-            </div>
-        </li>
-        ` 
-    } else {
-    	return `
-        <li class="dwelling__item">
-            <div class="item__img__wrap">
-                <img src="images/dwelling/a.jpg" alt="dwelling image" class="gwelling__img">
-            </div>
-            <h3 class="dwelling__item__title">${title}</h3>
-            <p class="dwelling__item__paragraph">Area: ${areaInSquareMeters} m^2</p>
-            <p class="dwelling__item__paragraph">Price: ${priceInUSD} USD</p>
-            <p class="dwelling__item__paragraph">Location: ${location}</p>
-            <p class="dwelling__item__paragraph">Has ${floors} floors</p>
-            <p class="dwelling__item__paragraph">Has no swimming pool</p>
-            <div class= "control__buttons">
-                <button class="item__btn edit__btn" id="edit__btn">Edit</button>
-                <button class="item__btn delete__btn" id="delete__btn">Delete</button>
-            </div>
-        </li>
-        ` 
-    } 
+    let no = ' '
+	if (!swimmingPool){
+        no = ' no '
+    }
+    return `
+    <li class="dwelling__item">
+        <div class="item__img__wrap">
+            <img src="${imageSrc}" alt="dwelling image" class="gwelling__img">
+        </div>
+        <h3 class="dwelling__item__title">${title}</h3>
+        <p class="dwelling__item__paragraph">Area: ${areaInSquareMeters} m^2</p>
+        <p class="dwelling__item__paragraph">Price: ${priceInUSD} USD</p>
+        <p class="dwelling__item__paragraph">Location: ${location}</p>
+        <p class="dwelling__item__paragraph">Has ${floors} floors</p>
+        <p class="dwelling__item__paragraph">Has${no}swimming pool</p>
+        <div class= "control__buttons">
+            <button class="item__btn edit__btn" id="edit__btn">Edit</button>
+            <button class="item__btn delete__btn" id="delete__btn">Delete</button>
+        </div>
+    </li>
+    `   
 }
 
 //display items
@@ -184,3 +123,179 @@ function countTotalPrice(){
 }
 
 displayDwellings(shownDwellings)
+
+
+//  popup add  //
+
+const popupLinks = document.querySelectorAll('.popup__link');
+const body = document.querySelectorAll('body')[0];
+const lockPadding = document.querySelectorAll('.lock__padding'); 
+
+let unlock = true;
+
+const timeout = 500;
+
+for (let index = 0; index < popupLinks.length; index++){
+    const popupLink = popupLinks[index];
+    popupLink.addEventListener('click', function (element) {
+        const popupName = popupLink.getAttribute('href').replace('#', '');
+        const curentPopup = document.getElementById(popupName);
+        popupOpen(curentPopup);
+        element.preventDefault();
+    });
+}
+
+const popupCloseIcons = document.querySelectorAll('.close__popup');
+for (let index = 0; index < popupCloseIcons.length; index++){
+    const popupCloseIcon = popupCloseIcons[index];
+    popupCloseIcon.addEventListener('click', function(element) {
+        popupClose(popupCloseIcon.closest('.popup'));
+        element.preventDefault();
+    });        
+}
+
+function popupOpen(curentPopup){
+    if (curentPopup && unlock) {
+        const popupActive = document.querySelector('.popup.open__popup');
+        if (popupActive) {
+            popupClose(popupActive, false);
+        } else {
+            bodyLock();
+        }
+        curentPopup.classList.add('open__popup');
+        curentPopup.addEventListener('click', function (element) {
+            if (!element.target.closest('.popup__content')) {
+                popupClose(element.target.closest('.popup'))
+            }
+        });
+    }
+}
+
+function popupClose(popupActive, doUnlock = true){
+    if (unlock) {
+        popupActive.classList.remove('open__popup');
+        if (doUnlock){
+            bodyUnLock();
+        }
+    }
+}
+
+function bodyLock() {
+    const lockPaddingValue = window.innerWidth - document.querySelector('.header').offsetWidth + 'px';
+    
+    for (let index = 0; index < lockPadding.length; index++){
+        const el = lockPadding[index];
+        el.style.paddingRight = lockPaddingValue;
+    } 
+    body.style.paddingRight = lockPaddingValue;
+    body.classList.add('lock__body');
+
+    unlock = false;
+    setTimeout(function() {
+        unlock = true;
+    }, timeout);
+ }
+
+ function bodyUnLock(){
+    setTimeout(function() {
+    for (let index = 0; index < lockPadding.length; index++){
+        const el = lockPadding[index];
+        el.style.paddingRight = '0px';
+    } 
+    body.style.paddingRight = '0px';
+    body.classList.remove('lock__body');
+    }, timeout)
+
+    unlock = false;
+    setTimeout(function() {
+        unlock = true;
+    }, timeout);
+ }
+
+ //close popup with esc
+ document.addEventListener('keydown', function (element) {
+    if (element.which === 27) {
+        const popupActive = document.querySelector('.popup.open__popup');
+        popupClose(popupActive);
+    }
+});
+
+
+//submit
+let addDwellingExceptions = [];
+const addSubmitBtn = document.getElementById('submit__add__dwelling__btn');
+const addInputName = document.getElementById('add__input__name');
+const addInputArea = document.getElementById('add__input__area');
+const addInputPrice = document.getElementById('add__input__price');
+const addInputLocation = document.getElementById('add__input__location');
+const addInputFloors = document.getElementById('add__input__floors');
+const addInputImage = document.getElementById('add__input__image');
+const addInputPool = document.getElementById('add__input__pool');
+
+addSubmitBtn.addEventListener('click', function (element) {
+    let name = addInputName.value;
+    let area = addInputArea.value;
+    let price = addInputPrice.value;
+    let location_ = addInputLocation.value;
+    let floors = addInputFloors.value;
+    let imageSrc = addInputImage.value;
+    let swimmingPool = addInputPool.checked;
+
+    if(name === '') {
+        addDwellingExceptions.push('Please, enter the name.');
+    }
+    if(area === '') {
+        addDwellingExceptions.push('Please, enter the area.');
+    }
+    if(price === '') {
+        addDwellingExceptions.push('Please, enter the price.');
+    }
+    if(location_ === '') {
+        addDwellingExceptions.push('Please, enter the location.');
+    }
+    if(floors === '') {
+        addDwellingExceptions.push('Please, enter the number of floors.');
+    }
+    if(imageSrc === '') {
+        addDwellingExceptions.push('Please, choose the image.');
+    }
+    if (addDwellingExceptions.length > 0){
+        alert(addDwellingExceptions[0]);
+        addDwellingExceptions = [];
+    } else {
+        addDwelling(name, area, price, location_, floors, imageSrc, swimmingPool); 
+        //close popup  
+        // const popupActive = document.querySelector('.popup.open__popup');
+        // popupClose(popupActive);
+    }
+});
+
+function addDwelling(name, area, price, location_, floors, imageSrc, swimmingPool){
+    console.log()
+    let id = 1;
+    if (dwellings.length > 0) {
+        id = dwellings[dwellings.length - 1]['id'] + 1;
+    }
+   
+    dwelling = {
+        "id": id,
+        "imageSrc": imageSrc,
+        "title": name,
+        "areaInSquareMeters": area,
+        "priceInUSD": price,
+        "location": location_,
+        "floors": floors,
+        "swimmingPool": swimmingPool
+    }
+    console.log(dwelling)
+    dwellingString = JSON.stringify(dwelling);
+// //////////////////////
+
+    let request = fetch('/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: dwellingString
+    });
+}

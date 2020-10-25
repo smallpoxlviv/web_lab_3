@@ -1,0 +1,111 @@
+
+
+    <div class="wrapper">
+        <div class="left__block">
+            <div class="left__block__content">
+                <div class="left__block__content__sort">
+                    <h2 class="left__block__title manage_dwelling">Manage Dwellings</h2>
+                    <div class="sort">
+                        <label for="sort__select">Sort By</label>
+                        <select id="sort__select" onchange="showDwellingListSorted()">
+                            <option value="none">none</option>
+                            <option value="name">name</option>
+                            <option value="area">area</option>
+                            <option value="price">price</option>
+                            <option value="floors">quantity of floors</option>
+                            <option value="pool">swimming pool</option>
+                        </select>
+                    </div>
+                </div>
+                <hr>
+                <div class="left__block__content__count">
+                    <h3 class="left__block__title">Count total price:</h3>
+                    <div class="count__div">
+                        <button class="count__btn" onclick="countTotalPrice()">Count</button>
+                    </div>
+                    <h4 id="total__price" class="left__block__title">Total price:</h4>
+                </div>
+            </div>
+            <div class="vl"><span></span></div>
+        </div>
+        <div class="right__block">
+            <ul id="dwelling__list" class="dwelling__list">
+                
+
+            </ul>
+        </div>
+    </div>            
+    
+
+
+    <div id="popup__add" class="popup">
+        <div class="popup__body">
+            <div class="popup__content">
+                <a href="#header" class="popup__close close__popup">X</a>
+                <h2 class="add__title">Add dwelling</h2>
+                <div class="add__container">
+                    <div class="add__item">
+                        <h1 class="add__input__title">Name</h1>
+                        <input 
+                            id="add__input__name"
+                            class="input" 
+                            type="text" 
+                            placeholder="Enter name">
+                    </div>
+                    <div class="add__item">
+                        <h1 class="add__input__title">Area</h1>
+                        <input 
+                            id="add__input__area"
+                            class="input" 
+                            type="number" 
+                            placeholder="Enter area">
+                    </div>
+                    <div class="add__item">
+                        <h1 class="add__input__title">Price</h1>
+                        <input 
+                            id="add__input__price"
+                            class="input" 
+                            type="number" 
+                            placeholder="Enter price">
+                    </div>
+                    <div class="add__item">
+                        <h1 class="add__input__title">Location</h1>
+                        <input 
+                            id="add__input__location"
+                            class="input" 
+                            type="text" 
+                            placeholder="Enter location">
+                    </div>
+                    <div class="add__item">
+                        <h1 class="add__input__title">Quantity of floors</h1>
+                        <input 
+                            id="add__input__floors"
+                            class="input" 
+                            type="number"
+                            value="1">
+                    </div>
+                    <div class="add__item">
+                        <h1 class="add__input__title">Image</h1>
+                        <input 
+                            id="add__input__image"
+                            class="input" 
+                            type="file"
+                            accept="image/png, image/jpeg">
+                            
+                    </div>
+                    <div class="add__item add__item__checkbox">
+                        <h1 class="add__input__title__checkbox">Swimming pool</h1>
+                        <input 
+                            id="add__input__pool"
+                            class="input input__checkbox" 
+                            type="checkbox">
+                    </div>
+                       
+                </div>
+                <input id="submit__add__dwelling__btn" class="submit__add__dwelling__btn" type="button" value="Submit"/>
+            </div>
+        </div>    
+    </div>
+
+    <script>let dwellingsString = '{{ dwellingsString }}'; </script>
+    <script src="../js/main.js"></script>
