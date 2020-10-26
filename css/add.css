@@ -1,4 +1,4 @@
-.add__body{
+/*.add__body{
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -13,7 +13,7 @@
 	right: 0;
 	top: 0;
 }
-
+*/
 .add__title{
 	margin: 0 auto 1.5vw auto;
 	font-size: 2em;

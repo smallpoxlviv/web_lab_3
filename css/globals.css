@@ -13,5 +13,8 @@ body.lock__body{
 	margin: 0 auto;
 	display: flex;
 }
+.hiden{
+	display: none;
+}
 
 

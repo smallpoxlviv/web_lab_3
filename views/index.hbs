@@ -107,5 +107,75 @@
         </div>    
     </div>
 
+
+
+    <div id="popup__edit" class="popup">
+        <div class="popup__body">
+            <div class="popup__content">
+                <a href="#header" class="popup__close close__popup">X</a>
+                <h2 class="edit__title">Edit dwelling</h2>
+                <div class="edit__container">
+                    <div class="edit__item">
+                        <h1 class="edit__input__title">Name</h1>
+                        <input 
+                            id="edit__input__name"
+                            class="input" 
+                            type="text" 
+                            placeholder="Enter name">
+                    </div>
+                    <div class="edit__item">
+                        <h1 class="edit__input__title">Area</h1>
+                        <input 
+                            id="edit__input__area"
+                            class="input" 
+                            type="number" 
+                            placeholder="Enter area">
+                    </div>
+                    <div class="edit__item">
+                        <h1 class="edit__input__title">Price</h1>
+                        <input 
+                            id="edit__input__price"
+                            class="input" 
+                            type="number" 
+                            placeholder="Enter price">
+                    </div>
+                    <div class="edit__item">
+                        <h1 class="edit__input__title">Location</h1>
+                        <input 
+                            id="edit__input__location"
+                            class="input" 
+                            type="text" 
+                            placeholder="Enter location">
+                    </div>
+                    <div class="edit__item">
+                        <h1 class="edit__input__title">Quantity of floors</h1>
+                        <input 
+                            id="edit__input__floors"
+                            class="input" 
+                            type="number">
+                    </div>
+                    <div class="edit__item">
+                        <h1 class="edit__input__title">Image</h1>
+                        <input 
+                            id="edit__input__image"
+                            class="input" 
+                            type="file"
+                            accept="image/png, image/jpeg">
+                            
+                    </div>
+                    <div class="edit__item edit__item__checkbox">
+                        <h1 class="edit__input__title__checkbox">Swimming pool</h1>
+                        <input 
+                            id="edit__input__pool"
+                            class="input input__checkbox" 
+                            type="checkbox">
+                    </div>
+                       
+                </div>
+                <input id="submit__edit__dwelling__btn" class="submit__edit__dwelling__btn" type="button" value="Submit"/>
+            </div>
+        </div>    
+    </div>
+
     <script>let dwellingsString = '{{ dwellingsString }}'; </script>
     <script src="../js/main.js"></script>

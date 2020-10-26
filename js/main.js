@@ -15,13 +15,13 @@ if (dwellingsString != '') {
 
 let shownDwellings = dwellings;
 
-function getDwellingItem (imageSrc, title, areaInSquareMeters, priceInUSD, location, floors, swimmingPool) {
+function getDwellingItem (id, imageSrc, title, areaInSquareMeters, priceInUSD, location, floors, swimmingPool) {
     let no = ' '
 	if (!swimmingPool){
         no = ' no '
     }
     return `
-    <li class="dwelling__item">
+    <li id="${id}" class="dwelling__item">
         <div class="item__img__wrap">
             <img src="${imageSrc}" alt="dwelling image" class="gwelling__img">
         </div>
@@ -32,7 +32,7 @@ function getDwellingItem (imageSrc, title, areaInSquareMeters, priceInUSD, locat
         <p class="dwelling__item__paragraph">Has ${floors} floors</p>
         <p class="dwelling__item__paragraph">Has${no}swimming pool</p>
         <div class= "control__buttons">
-            <button class="item__btn edit__btn" id="edit__btn">Edit</button>
+            <button class="item__btn edit__btn popup__link" href="#popup__edit" id="edit__btn">Edit</button>
             <button class="item__btn delete__btn" id="delete__btn">Delete</button>
         </div>
     </li>
@@ -42,7 +42,7 @@ function getDwellingItem (imageSrc, title, areaInSquareMeters, priceInUSD, locat
 //display items
 const displayDwellings = (dwellings) => {
     const displayItems = dwellings.map((dwelling)=>{
-    	return getDwellingItem(dwelling.imageSrc, dwelling.title, dwelling.areaInSquareMeters, dwelling.priceInUSD, dwelling.location, dwelling.floors, dwelling.swimmingPool)
+    	return getDwellingItem(dwelling.id, dwelling.imageSrc, dwelling.title, dwelling.areaInSquareMeters, dwelling.priceInUSD, dwelling.location, dwelling.floors, dwelling.swimmingPool)
     }).join('');
 
     dwellingList.innerHTML = displayItems;
@@ -125,7 +125,7 @@ function countTotalPrice(){
 displayDwellings(shownDwellings)
 
 
-//  popup add  //
+//  popup add and edit //
 
 const popupLinks = document.querySelectorAll('.popup__link');
 const body = document.querySelectorAll('body')[0];
@@ -221,6 +221,8 @@ function bodyLock() {
 });
 
 
+//  submit in add popup  //
+
 //submit
 let addDwellingExceptions = [];
 const addSubmitBtn = document.getElementById('submit__add__dwelling__btn');
@@ -232,14 +234,28 @@ const addInputFloors = document.getElementById('add__input__floors');
 const addInputImage = document.getElementById('add__input__image');
 const addInputPool = document.getElementById('add__input__pool');
 
-addSubmitBtn.addEventListener('click', function (element) {
-    let name = addInputName.value;
-    let area = addInputArea.value;
-    let price = addInputPrice.value;
-    let location_ = addInputLocation.value;
-    let floors = addInputFloors.value;
-    let imageSrc = addInputImage.value;
-    let swimmingPool = addInputPool.checked;
+let imageFile;
+addInputImage.addEventListener('change', (event) => {
+    const fileList = event.target.files;
+    imageFile = fileList[0];
+});
+
+let name;
+let area;
+let price;
+let location_;
+let floors;
+let swimmingPool;
+let imageValue;
+
+addSubmitBtn.addEventListener('click', function (event) {
+    name = addInputName.value;
+    area = addInputArea.value;
+    price = addInputPrice.value;
+    location_ = addInputLocation.value;
+    floors = addInputFloors.value;
+    swimmingPool = addInputPool.checked;
+    imageValue = addInputImage.value;
 
     if(name === '') {
         addDwellingExceptions.push('Please, enter the name.');
@@ -256,22 +272,62 @@ addSubmitBtn.addEventListener('click', function (element) {
     if(floors === '') {
         addDwellingExceptions.push('Please, enter the number of floors.');
     }
-    if(imageSrc === '') {
+    if(imageValue === '') {
         addDwellingExceptions.push('Please, choose the image.');
     }
     if (addDwellingExceptions.length > 0){
         alert(addDwellingExceptions[0]);
         addDwellingExceptions = [];
     } else {
-        addDwelling(name, area, price, location_, floors, imageSrc, swimmingPool); 
-        //close popup  
-        // const popupActive = document.querySelector('.popup.open__popup');
-        // popupClose(popupActive);
+        readImage(imageFile);  
+        //when image is ready calls AddDwelling()
+        whenImageIsReadyAddDwelling(); 
+        //close popup 
+        const popupActive = document.querySelector('.popup.open__popup');
+        popupClose(popupActive);
+        //clean input
+        addInputName.value = '';
+        addInputArea.value = '';
+        addInputPrice.value = '';
+        addInputLocation.value = '';
+        addInputFloors.value = 1;
+        addInputPool.checked = false;
+        addInputImage.value = '';
     }
 });
 
-function addDwelling(name, area, price, location_, floors, imageSrc, swimmingPool){
-    console.log()
+//read image
+let ready = false;
+let imageSrc = '';
+function readImage(file) {
+    // Check if the file is an image.
+    if (file.type && file.type.indexOf('image') === -1) {
+        console.log('File is not an image.', file.type, file);
+        return;
+    }
+    if (!file) { 
+        console.log('There is no file');
+        return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function (event) {
+        imageSrc = reader.result;
+        ready = true;
+    };
+}
+
+function whenImageIsReadyAddDwelling() {
+    if (ready === true) {
+        ready = false;
+        addDwelling();
+        return;
+    }
+    setTimeout(whenImageIsReadyAddDwelling, 1000);
+}
+
+//add dwelling
+async function addDwelling(){
     let id = 1;
     if (dwellings.length > 0) {
         id = dwellings[dwellings.length - 1]['id'] + 1;
@@ -287,15 +343,179 @@ function addDwelling(name, area, price, location_, floors, imageSrc, swimmingPoo
         "floors": floors,
         "swimmingPool": swimmingPool
     }
-    console.log(dwelling)
-    dwellingString = JSON.stringify(dwelling);
-// //////////////////////
 
-    let request = fetch('/', {
+    dwellingString = JSON.stringify(dwelling);
+
+    let response = await fetch('/', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json;charset=utf-8'
+            'Content-Type': 'application/json;charset=utf-8'
         },
         body: dwellingString
     });
+    // let result = await response.json();
+    if (response.status == 200) {
+        console.log(response.status, ': Dwelling was added successfully.'); 
+    } else {
+        console.log(response.status, ': Something went wrong while add!');
+        alert('Something went wrong! Please, try again later.')
+    }
 }
+
+
+//   delete dwelling button  //
+
+const deleteButtons = document.querySelectorAll('#delete__btn');
+
+for (let index = 0; index < deleteButtons.length; index++){
+    const deleteButton = deleteButtons[index];
+    deleteButton.addEventListener('click', function (element) {
+        id = deleteButton.closest('.dwelling__item').id;
+        deleteDwelling(id);
+    });
+}
+
+async function deleteDwelling(id){
+
+    dwelling = {
+        "id": id
+    }
+    dwellingString = JSON.stringify(dwelling);
+
+    let response = await fetch('/', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: dwellingString
+    });
+
+    if (response.status == 200) {
+        console.log(response.status, ': Dwelling was deleted successfully.');
+        hideElement(id); 
+    } else {
+        console.log(response.status, ': Something went wrong while delete!');
+        alert('Something went wrong! Please, try again later.')
+    }
+}
+
+function hideElement(id){
+    let element = document.getElementById(id);
+    element.classList.add('hiden');
+}
+
+
+
+//////////////////////////////////////////
+
+
+//   edit dwelling button //
+
+const editButtons = document.querySelectorAll('#edit__btn');
+let editId;
+for (let index = 0; index < editButtons.length; index++){
+    const editButton = editButtons[index];
+    editButton.addEventListener('click', function (element) {
+        editId = editButton.closest('.dwelling__item').id;
+    });
+}
+
+
+//  submit in edit popup  //
+//submit
+const editSubmitBtn = document.getElementById('submit__edit__dwelling__btn');
+const editInputName = document.getElementById('edit__input__name');
+const editInputArea = document.getElementById('edit__input__area');
+const editInputPrice = document.getElementById('edit__input__price');
+const editInputLocation = document.getElementById('edit__input__location');
+const editInputFloors = document.getElementById('edit__input__floors');
+const editInputImage = document.getElementById('edit__input__image');
+const editInputPool = document.getElementById('edit__input__pool');
+
+imageFile = undefined;
+imageSrc = '';
+editInputImage.addEventListener('change', (event) => {
+    const fileList = event.target.files;
+    imageFile = fileList[0];
+});
+
+let nameUpdate;
+let areaUpdate;
+let priceUpdate;
+let location_Update;
+let floorsUpdate;
+let swimmingPoolUpdate;
+
+editSubmitBtn.addEventListener('click', function (event) {
+    nameUpdate = editInputName.value;
+    areaUpdate = editInputArea.value;
+    priceUpdate = editInputPrice.value;
+    location_Update = editInputLocation.value;
+    floorsUpdate = editInputFloors.value;
+    swimmingPoolUpdate = editInputPool.checked;
+
+    if (imageFile != undefined) {
+        readImage(imageFile);  
+        //when image is ready calls AddDwelling()
+        whenImageIsReadyUpdateDwelling();
+    } else {
+        updateDwelling();
+    }
+    //close popup 
+    const popupActive = document.querySelector('.popup.open__popup');
+    popupClose(popupActive);
+    //clean input
+    addInputName.value = '';
+    addInputArea.value = '';
+    addInputPrice.value = '';
+    addInputLocation.value = '';
+    addInputFloors.value = '';
+    addInputPool.checked = false;
+    addInputImage.value = '';
+});
+
+function whenImageIsReadyUpdateDwelling() {
+    if (ready === true) {
+        ready = false;
+        updateDwelling();
+        return;
+    }
+    setTimeout(whenImageIsReadyUpdateDwelling, 1000);
+}
+
+//update dwelling
+async function updateDwelling(){
+       
+    dwelling = {
+        "id": editId,
+        "imageSrc": imageSrc,
+        "title": nameUpdate,
+        "areaInSquareMeters": areaUpdate,
+        "priceInUSD": priceUpdate,
+        "location": location_Update,
+        "floors": floorsUpdate,
+        "swimmingPool": swimmingPoolUpdate
+    }
+
+    dwellingString = JSON.stringify(dwelling);
+
+    let response = await fetch('/', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: dwellingString
+    });
+    // let result = await response.json();
+    if (response.status == 200) {
+        console.log(response.status, ': Dwelling was edited successfully.'); 
+    } else {
+        console.log(response.status, ': Something went wrong while edit!');
+        alert('Something went wrong! Please, try again later.')
+    }
+}
+
+// function hideElement(id){
+//     let element = document.getElementById(id);
+//     element.classList.add('hiden');
+// }
