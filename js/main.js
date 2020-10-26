@@ -1,6 +1,3 @@
-let a = 'a';
-console.log(a);
-
 const dwellingList = document.getElementById('dwelling__list');
 const inputDwelling = document.getElementById('header__input');
 const clearButton = document.getElementById('clear__btn');
@@ -42,7 +39,7 @@ function getDwellingItem (id, imageSrc, title, areaInSquareMeters, priceInUSD, l
 //display items
 const displayDwellings = (dwellings) => {
     const displayItems = dwellings.map((dwelling)=>{
-    	return getDwellingItem(dwelling.id, dwelling.imageSrc, dwelling.title, dwelling.areaInSquareMeters, dwelling.priceInUSD, dwelling.location, dwelling.floors, dwelling.swimmingPool)
+    	return getDwellingItem(dwelling._id, dwelling.imageSrc, dwelling.title, dwelling.areaInSquareMeters, dwelling.priceInUSD, dwelling.location, dwelling.floors, dwelling.swimmingPool)
     }).join('');
 
     dwellingList.innerHTML = displayItems;
@@ -353,7 +350,6 @@ async function addDwelling(){
         },
         body: dwellingString
     });
-    // let result = await response.json();
     if (response.status == 200) {
         console.log(response.status, ': Dwelling was added successfully.'); 
     } else {
@@ -506,7 +502,6 @@ async function updateDwelling(){
         },
         body: dwellingString
     });
-    // let result = await response.json();
     if (response.status == 200) {
         console.log(response.status, ': Dwelling was edited successfully.'); 
     } else {
@@ -514,8 +509,3 @@ async function updateDwelling(){
         alert('Something went wrong! Please, try again later.')
     }
 }
-
-// function hideElement(id){
-//     let element = document.getElementById(id);
-//     element.classList.add('hiden');
-// }

@@ -10,11 +10,11 @@ const schema = new Schema({
 		required: true
 	},
 	areaInSquareMeters: {
-		type: Integer,
+		type: Number,
 		required: true
 	},
 	priceInUSD: {
-		type: Integer,
+		type: Number,
 		required: true
 	},
 	location: {
@@ -22,7 +22,7 @@ const schema = new Schema({
 		required: true
 	},
 	floors: {
-		type: Integer,
+		type: Number,
 		required: true
 	},
 	swimmingPool: {
