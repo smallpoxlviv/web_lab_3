@@ -11,6 +11,7 @@
 	border-radius: 5px;
 	margin: 0 5px 30px 30px;
 	padding: 3px;
+	max-width: 260px;
 }
 
 .item__img__wrap{
